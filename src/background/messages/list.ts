@@ -8,16 +8,16 @@ const syncStorage = new Storage({
 
 const handler: PlasmoMessaging.MessageHandler = async (request, response) => {
     const items = await syncStorage.getAll()
-    const words = []
+    const keys = []
     for (const key in items) {
         if (key.startsWith('word.')) {
-            const word = key.substring('word.'.length)
-            words.push(word)
+            const queryKey = key.substring('word.'.length)
+            keys.push(queryKey)
         }
     }
     response.send({
         code: 0,
-        words: words
+        keys: keys
     })
 }
 

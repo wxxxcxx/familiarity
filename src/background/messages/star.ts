@@ -12,17 +12,17 @@ const syncStorage = new Storage({
 })
 
 const handler: PlasmoMessaging.MessageHandler = async (request, response) => {
-  let word = request.body.word
+  let queryKey = request.body.key
   try {
-    if (!word) {
+    if (!queryKey) {
       throw new Error(`No word provided`)
     }
-    if (!utils.isEnglishWord(word)) {
-      throw new Error(`Not a English word: ${word}`)
+    if (!utils.isEnglishWord(queryKey)) {
+      throw new Error(`Not a English word: ${queryKey}`)
     }
-    word = word.trim()
-    word = word.toLowerCase()
-    const key = `word.${word}`
+    queryKey = queryKey.trim()
+    queryKey = queryKey.toLowerCase()
+    const key = `word.${queryKey}`
     const value = await syncStorage.getItem<WordItem>(key)
     if (!value) {
       syncStorage.setItem(key, {
@@ -31,12 +31,12 @@ const handler: PlasmoMessaging.MessageHandler = async (request, response) => {
     }
     response.send({
       code: 0,
-      word: word,
+      word: queryKey,
     })
   } catch (ex) {
     response.send({
       code: 1,
-      word: word,
+      word: queryKey,
       message: ex.message
     })
     return
