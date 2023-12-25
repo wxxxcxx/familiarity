@@ -1,8 +1,8 @@
-import { sendToBackground } from "@plasmohq/messaging"
-import type { PlasmoGetStyle } from "plasmo"
-import React from "react"
-import { useState, type ReactNode } from "react"
-import styled from "styled-components"
+import type { PlasmoGetStyle } from 'plasmo'
+import React, { useState, type ReactNode } from 'react'
+import styled from 'styled-components'
+
+import { sendToBackground } from '@plasmohq/messaging'
 
 const styleContent = `
   body {
@@ -14,13 +14,13 @@ const styleContent = `
 
 const Wrapper = styled.div`
   box-sizing: border-box;
-  display: "flex";
-  flex-direction: "column";
+  display: 'flex';
+  flex-direction: 'column';
   padding: 16px;
   background-color: #eee;
   color: #333;
   @media screen and (prefers-color-scheme: dark) {
-    &{
+    & {
       background-color: #444;
       color: #999;
     }
@@ -29,7 +29,7 @@ const Wrapper = styled.div`
 
 const ListWrapper = styled.div`
   margin-top: 20px;
-  width:250px;
+  width: 250px;
   max-height: 500px;
   overflow-y: auto;
 `
@@ -49,20 +49,19 @@ const ItemTitle = styled.div`
   font-weight: 400;
 `
 const ItemButton = styled.button`
-    cursor: pointer;
-    color: inherit;
-    border: none;
-    outline: none;
-    font-size: 1.2em;
-    transition: all 500ms ease; 
-    background: transparent;
-    color:inherits
-    &:hover{
-        transform: scale(1.2,1.2) rotate(0.2turn);
-    }
-    &:active{
-        transform: scale(0.8,0.8);
-    }
+  cursor: pointer;
+  color: inherit;
+  border: none;
+  outline: none;
+  font-size: 1.2em;
+  transition: all 500ms ease;
+  background: transparent;
+  color:inherits &:hover {
+    transform: scale(1.2, 1.2) rotate(0.2turn);
+  }
+  &:active {
+    transform: scale(0.8, 0.8);
+  }
 `
 
 const Search = styled.input`
@@ -80,7 +79,7 @@ const Search = styled.input`
   box-sizing: border-box;
   padding: 0 10px;
   @media screen and (prefers-color-scheme: dark) {
-    &{
+    & {
       border: 1px solid #999;
       background-color: #555;
       color: #ccc;
@@ -98,37 +97,33 @@ const EmplyList = styled.div`
 `
 
 class WordItem extends React.Component<{
-  word: string,
+  word: string
   onUnstar: (word: string) => void
 }> {
-
   unstar = () => {
     sendToBackground({
       name: 'unstar',
       body: {
         key: this.props.word
       }
-    }).then(response => {
+    }).then((response) => {
       this.props.onUnstar(this.props.word)
     })
   }
 
   render(): ReactNode {
-    return <ItemWrapper>
-      <ItemTitle>
-        {this.props.word}
-      </ItemTitle>
-      <ItemButton onClick={this.unstar}>
-        ★
-      </ItemButton>
-    </ItemWrapper>
+    return (
+      <ItemWrapper>
+        <ItemTitle>{this.props.word}</ItemTitle>
+        <ItemButton onClick={this.unstar}>★</ItemButton>
+      </ItemWrapper>
+    )
   }
 }
 
 class WordList extends React.Component<{
   filterKey: string
 }> {
-
   declare state: {
     words: string[]
   }
@@ -141,8 +136,8 @@ class WordList extends React.Component<{
 
   refresh = () => {
     sendToBackground({
-      name: 'list',
-    }).then(response => {
+      name: 'list'
+    }).then((response) => {
       this.setState({
         words: response.keys
       })
@@ -154,32 +149,38 @@ class WordList extends React.Component<{
   }
 
   render(): ReactNode {
+    const list = this.state.words.filter((word) =>
+      word.includes(this.props.filterKey)
+    )
+    const inner =
+      list.length > 0 ? (
+        list.map((word) => {
+          return (
+            <WordItem key={word} word={word} onUnstar={this.refresh}></WordItem>
+          )
+        })
+      ) : (
+        <EmplyList>No words starred yet.</EmplyList>
+      )
 
-    const list = this.state.words
-      .filter(word => word.includes(this.props.filterKey))
-    const inner = list.length > 0 ? list.map((word) => {
-      return <WordItem key={word} word={word} onUnstar={this.refresh}></WordItem>
-    }) : <EmplyList>
-      No words starred yet.
-    </EmplyList>
-
-    return <ListWrapper>
-      {inner}
-    </ListWrapper>
+    return <ListWrapper>{inner}</ListWrapper>
   }
 }
 
-
 function Index() {
-  const [filterKey, setFilterKey] = useState("")
+  const [filterKey, setFilterKey] = useState('')
 
   return (
     <Wrapper>
       <style>{styleContent}</style>
       <div>
-        <Search type="input" placeholder="Type to search words" onChange={(event) => {
-          setFilterKey(event.target.value)
-        }} value={filterKey}></Search>
+        <Search
+          type="input"
+          placeholder="Type to search words"
+          onChange={(event) => {
+            setFilterKey(event.target.value)
+          }}
+          value={filterKey}></Search>
       </div>
       <div>
         <WordList filterKey={filterKey}></WordList>

@@ -1,13 +1,14 @@
-import type { PlasmoMessaging } from "@plasmohq/messaging"
-import { Storage } from "@plasmohq/storage"
-import * as utils from "../../utils"
+import type { PlasmoMessaging } from '@plasmohq/messaging'
+import { Storage } from '@plasmohq/storage'
+
+import * as utils from '../../utils'
 
 const syncStorage = new Storage({
-  area: "sync",
+  area: 'sync'
 })
 
 const localStorage = new Storage({
-  area: "local",
+  area: 'local'
 })
 
 const queryFromCache = async (queryKey: string) => {
@@ -54,7 +55,9 @@ export const query = async (queryKey: string) => {
     return definitions
   }
   console.log(`Querying word ${queryKey} from youdao`)
-  const result = await fetch(`https://dict.youdao.com/jsonapi?jsonversion=2&dicts=%7B%22count%22%3A99%2C%22dicts%22%3A%5B%5B%22ec%22%2C%22ce%22%5D%5D%7D&q=${queryKey}`)
+  const result = await fetch(
+    `https://dict.youdao.com/jsonapi?jsonversion=2&dicts=%7B%22count%22%3A99%2C%22dicts%22%3A%5B%5B%22ec%22%2C%22ce%22%5D%5D%7D&q=${queryKey}`
+  )
   if (!result.ok) {
     throw new Error(`Failed to fetch word ${queryKey}: ${result.statusText}`)
   }
@@ -63,7 +66,7 @@ export const query = async (queryKey: string) => {
   if (!data || data.trs.length === 0) {
     throw new Error(`Not found definition, response: ${JSON.stringify(data)}`)
   }
-  definitions = [];
+  definitions = []
   for (const tr of data.trs) {
     const definition = tr?.tr[0]?.l?.i[0]
     if (!definition) {
@@ -88,12 +91,12 @@ const handler: PlasmoMessaging.MessageHandler = async (request, response) => {
     queryKey = queryKey.toLowerCase()
     const definitions = await query(queryKey)
     const key = `word.${queryKey}`
-    const starred = await syncStorage.getItem(key) != null
+    const starred = (await syncStorage.getItem(key)) != null
     response.send({
       code: 0,
       key: queryKey,
       starred: starred,
-      definitions: definitions,
+      definitions: definitions
     })
   } catch (ex) {
     response.send({

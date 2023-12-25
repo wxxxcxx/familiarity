@@ -1,10 +1,17 @@
-import type { PlasmoRender, PlasmoGetStyle, PlasmoGetInlineAnchorList, PlasmoMountShadowHost, PlasmoWatchOverlayAnchor, PlasmoCSUIJSXContainer } from "plasmo";
-import React from "react";
-import { createRoot } from "react-dom/client"
-import Popup from 'reactjs-popup';
-import { sendToBackground } from "@plasmohq/messaging";
-import styled from 'styled-components';
+import type {
+  PlasmoCSUIJSXContainer,
+  PlasmoGetInlineAnchorList,
+  PlasmoGetStyle,
+  PlasmoMountShadowHost,
+  PlasmoRender,
+  PlasmoWatchOverlayAnchor
+} from 'plasmo'
+import React from 'react'
+import { createRoot } from 'react-dom/client'
+import Popup from 'reactjs-popup'
+import styled from 'styled-components'
 
+import { sendToBackground } from '@plasmohq/messaging'
 
 const Tooltip = styled(Popup)`
   &-content {
