@@ -14,11 +14,12 @@ const styleContent = `
 
 const Wrapper = styled.div`
   box-sizing: border-box;
-  display: 'flex';
-  flex-direction: 'column';
+  display: flex;
+  flex-direction: column;
   padding: 16px;
   background-color: #eee;
   color: #333;
+  width: 300px;
   @media screen and (prefers-color-scheme: dark) {
     & {
       background-color: #444;
@@ -29,7 +30,7 @@ const Wrapper = styled.div`
 
 const ListWrapper = styled.div`
   margin-top: 20px;
-  width: 250px;
+  width: 100%;
   max-height: 500px;
   overflow-y: auto;
 `
@@ -41,6 +42,12 @@ const ItemWrapper = styled.div`
   padding: 10px;
   box-sizing: border-box;
   width: 100%;
+  transition: all 500ms ease;
+  border-radius: 4px;
+
+  &:hover {
+    background-color: #dddddd11;
+  }
 `
 
 const ItemTitle = styled.div`
@@ -56,7 +63,8 @@ const ItemButton = styled.button`
   font-size: 1.2em;
   transition: all 500ms ease;
   background: transparent;
-  color:inherits &:hover {
+
+  &:hover {
     transform: scale(1.2, 1.2) rotate(0.2turn);
   }
   &:active {

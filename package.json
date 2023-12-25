@@ -37,8 +37,7 @@
       "<all_urls>"
     ],
     "permissions": [
-      "storage",
-      "background"
+      "storage"
     ]
   }
 }

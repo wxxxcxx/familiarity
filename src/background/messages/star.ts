@@ -1,3 +1,5 @@
+import { func } from 'prop-types'
+
 import type { PlasmoMessaging } from '@plasmohq/messaging'
 import { Storage } from '@plasmohq/storage'
 
@@ -11,21 +13,25 @@ const syncStorage = new Storage({
   area: 'sync'
 })
 
+function checkWord(word: string): boolean {
+  if (!word) {
+    throw new Error(`No word provided`)
+  }
+  if (!utils.isEnglishWord(word)) {
+    throw new Error(`Not a English word: ${word}`)
+  }
+  return true
+}
+
 const handler: PlasmoMessaging.MessageHandler = async (request, response) => {
   let queryKey = request.body.key
   try {
-    if (!queryKey) {
-      throw new Error(`No word provided`)
-    }
-    if (!utils.isEnglishWord(queryKey)) {
-      throw new Error(`Not a English word: ${queryKey}`)
-    }
-    queryKey = queryKey.trim()
+    checkWord(queryKey)
     queryKey = queryKey.toLowerCase()
     const key = `word.${queryKey}`
     const value = await syncStorage.getItem<WordItem>(key)
     if (!value) {
-      syncStorage.setItem(key, {
+      await syncStorage.setItem(key, {
         timespan: Date.now()
       })
     }

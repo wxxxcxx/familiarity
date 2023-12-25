@@ -21,9 +21,12 @@ const Button = styled.button`
   font-size: 1.2em;
   transition: all 500ms ease;
   background: transparent;
-  color:inherits &:hover {
+  color: inherit;
+
+  &:hover {
     transform: scale(1.2, 1.2) rotate(0.2turn);
   }
+
   &:active {
     transform: scale(0.8, 0.8);
   }
@@ -42,7 +45,7 @@ class Detail extends React.Component<{
     message: string | null
   }
 }> {
-  constructor(props) {
+  constructor(props: any) {
     super(props)
   }
 
@@ -57,7 +60,7 @@ class Detail extends React.Component<{
         console.log(response.message)
         return
       }
-      api.renderer.render()
+      return api.renderer.render()
     })
   }
 
@@ -72,7 +75,7 @@ class Detail extends React.Component<{
         console.log(response.message)
         return
       }
-      api.renderer.render()
+      return api.renderer.render()
     })
   }
 

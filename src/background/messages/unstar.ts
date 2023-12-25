@@ -11,21 +11,25 @@ const syncStorage = new Storage({
   area: 'sync'
 })
 
+function checkWord(word: string): boolean {
+  if (!word) {
+    throw new Error(`No word provided`)
+  }
+  if (!utils.isEnglishWord(word)) {
+    throw new Error(`Not a English word: ${word}`)
+  }
+  return true
+}
+
 const handler: PlasmoMessaging.MessageHandler = async (request, response) => {
   let queryKey = request.body.key
   try {
-    if (!queryKey) {
-      throw new Error(`No word provided`)
-    }
-    if (!utils.isEnglishWord(queryKey)) {
-      throw new Error(`Not a English word: ${queryKey}`)
-    }
-    queryKey = queryKey.trim()
+    checkWord(queryKey)
     queryKey = queryKey.toLowerCase()
     const key = `word.${queryKey}`
     const value = await syncStorage.getItem<WordItem>(key)
     if (value) {
-      syncStorage.removeItem(key)
+      await syncStorage.removeItem(key)
     }
     response.send({
       code: 0,
@@ -37,7 +41,6 @@ const handler: PlasmoMessaging.MessageHandler = async (request, response) => {
       word: queryKey,
       message: ex.message
     })
-    return
   }
 }
 

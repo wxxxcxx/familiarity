@@ -63,11 +63,11 @@ export const query = async (queryKey: string) => {
   }
   let data = await result.json()
   data = data?.ec?.word[0]
-  if (!data || data.trs.length === 0) {
+  if (!data || data['trs'].length === 0) {
     throw new Error(`Not found definition, response: ${JSON.stringify(data)}`)
   }
   definitions = []
-  for (const tr of data.trs) {
+  for (const tr of data['trs']) {
     const definition = tr?.tr[0]?.l?.i[0]
     if (!definition) {
       throw new Error(`Not found definition, response: ${JSON.stringify(data)}`)
@@ -78,16 +78,20 @@ export const query = async (queryKey: string) => {
   return definitions
 }
 
+function checkWord(word: string): boolean {
+  if (!word) {
+    throw new Error(`No word provided`)
+  }
+  if (!utils.isEnglishWord(word)) {
+    throw new Error(`Not a English word: ${word}`)
+  }
+  return true
+}
+
 const handler: PlasmoMessaging.MessageHandler = async (request, response) => {
   let queryKey = request.body.key
   try {
-    if (!queryKey) {
-      throw new Error(`No word provided`)
-    }
-    if (!utils.isEnglishWord(queryKey)) {
-      throw new Error(`Not a English word: ${queryKey}`)
-    }
-    queryKey = queryKey.trim()
+    checkWord(queryKey)
     queryKey = queryKey.toLowerCase()
     const definitions = await query(queryKey)
     const key = `word.${queryKey}`

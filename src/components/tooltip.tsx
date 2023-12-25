@@ -1,17 +1,5 @@
-import type {
-  PlasmoCSUIJSXContainer,
-  PlasmoGetInlineAnchorList,
-  PlasmoGetStyle,
-  PlasmoMountShadowHost,
-  PlasmoRender,
-  PlasmoWatchOverlayAnchor
-} from 'plasmo'
-import React from 'react'
-import { createRoot } from 'react-dom/client'
 import Popup from 'reactjs-popup'
 import styled from 'styled-components'
-
-import { sendToBackground } from '@plasmohq/messaging'
 
 const Tooltip = styled(Popup)`
   &-content {
@@ -35,7 +23,7 @@ const Tooltip = styled(Popup)`
     &-content {
       color: #aaaaaa;
       background-color: #444444;
-      box-shadow: 0 1px 8px rgba(255, 255, 255, 0.2);
+      box-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
     }
     &-arrow {
       color: #444444;

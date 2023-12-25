@@ -2,10 +2,7 @@ import styleText from 'data-text:./style.css'
 import type {
   PlasmoCSUIJSXContainer,
   PlasmoGetInlineAnchorList,
-  PlasmoGetStyle,
-  PlasmoMountShadowHost,
-  PlasmoRender,
-  PlasmoWatchOverlayAnchor
+  PlasmoRender
 } from 'plasmo'
 import React from 'react'
 import { createRoot } from 'react-dom/client'
@@ -24,28 +21,35 @@ import api from './renderer'
   })
 })()
 
-const StarTooltip = (props) => (
-  <>
-    <style>{styleText}</style>
-    <Tooltip
-      trigger={
-        <span>
-          <Label text={props.text} data={props.data}></Label>
-        </span>
-      }
-      className="tooltip"
-      position={['top center', 'bottom center', 'left center', 'right center']}
-      on={'hover'}
-      closeOnDocumentClick
-      keepTooltipInside={true}>
-      {props.data.code == 0 ? (
-        <Detail text={props.text} data={props.data}></Detail>
-      ) : (
-        props.data.message
-      )}
-    </Tooltip>
-  </>
-)
+function StarTooltip(props: any) {
+  return (
+    <>
+      <style>{styleText}</style>
+      <Tooltip
+        trigger={
+          <span>
+            <Label text={props.text} data={props.data}></Label>
+          </span>
+        }
+        className="tooltip"
+        position={[
+          'top center',
+          'bottom center',
+          'left center',
+          'right center'
+        ]}
+        on={'hover'}
+        closeOnDocumentClick
+        keepTooltipInside={true}>
+        {props.data.code == 0 ? (
+          <Detail text={props.text} data={props.data}></Detail>
+        ) : (
+          props.data.message
+        )}
+      </Tooltip>
+    </>
+  )
+}
 
 export const getInlineAnchorList: PlasmoGetInlineAnchorList = async () =>
   document.querySelectorAll('xtooltip-star-anchor')
@@ -81,15 +85,14 @@ const renderRootContainer = async (rootContainer: HTMLElement) => {
 }
 
 export const render: PlasmoRender<PlasmoCSUIJSXContainer> = async ({
-  anchor, // the observed anchor, OR document.body.
   createRootContainer // This creates the default root container
 }) => {
   const rootContainer = await createRootContainer()
   if (rootContainer instanceof NodeList) {
     // console.log('Refresh! Root count:', rootContainer.length)
-    rootContainer.forEach(async (container) => {
+    rootContainer.forEach((container) => {
       const rootContainer = container as HTMLElement
-      await renderRootContainer(rootContainer)
+      renderRootContainer(rootContainer)
     })
   } else {
     await renderRootContainer(rootContainer as HTMLElement)

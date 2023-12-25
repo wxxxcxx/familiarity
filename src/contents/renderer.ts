@@ -3,7 +3,7 @@ import { sendToBackground } from '@plasmohq/messaging'
 const matchWordsPositions = (text: string) => {
   const regex = /\b[a-zA-Z]{3,99}\b/g // 正则表达式匹配英文单词
   const positions = []
-  let match
+  let match: RegExpExecArray | null
   while ((match = regex.exec(text)) !== null) {
     positions.push({
       word: match[0],
@@ -17,10 +17,11 @@ const matchWordsPositions = (text: string) => {
 class NodeRender {
   keys: string[]
   observer: MutationObserver
+
   constructor() {
     this.keys = []
     const MutationObserver = window.MutationObserver
-    this.observer = new MutationObserver((mutationsList, observer) => {
+    this.observer = new MutationObserver((mutationsList) => {
       for (const mutation of mutationsList) {
         mutation.addedNodes.forEach(async (node) => {
           await this.renderNode(node)
@@ -28,6 +29,7 @@ class NodeRender {
       }
     })
   }
+
   async renderNode(node: Node) {
     const keys = this.keys
     if (node instanceof HTMLScriptElement || node instanceof HTMLStyleElement) {

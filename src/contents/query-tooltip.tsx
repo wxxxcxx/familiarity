@@ -2,21 +2,17 @@ import styleText from 'data-text:./style.css'
 import type {
   PlasmoCSUIJSXContainer,
   PlasmoGetInlineAnchor,
-  PlasmoGetInlineAnchorList,
-  PlasmoGetStyle,
-  PlasmoMountShadowHost,
-  PlasmoRender,
-  PlasmoWatchOverlayAnchor
+  PlasmoRender
 } from 'plasmo'
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 
 import { sendToBackground } from '@plasmohq/messaging'
 
+import { isEnglishWord } from '~utils'
+
 import Detail from '../components/detail'
 import Tooltip from '../components/tooltip'
-import { isEnglishWord } from '../utils'
-import api from './renderer'
 
 const querySelection = () => {
   document.querySelectorAll('.xtooltip-query-anchor').forEach((element) => {
@@ -32,8 +28,8 @@ const querySelection = () => {
     return
   }
   const range = selection.getRangeAt(0)
-  const text = range.toString()
-  if (text == '' || !isEnglishWord(text)) {
+  const text = range.toString().trim()
+  if (text === '' || !isEnglishWord(text)) {
     return
   }
   const rect = range.getBoundingClientRect()
@@ -53,32 +49,39 @@ const querySelection = () => {
 }
 document.body.addEventListener('mouseup', querySelection)
 
-const QueryToolTip = (props) => (
-  <>
-    <style>{styleText}</style>
-    <Tooltip
-      trigger={
-        <div
-          style={{
-            height: '100%',
-            width: '100%'
-          }}></div>
-      }
-      className="tooltip"
-      open={props.open}
-      lockScroll={true}
-      position={['top center', 'bottom center', 'left center', 'right center']}
-      on={'click'}
-      closeOnDocumentClick
-      keepTooltipInside={true}>
-      {props.data.code == 0 ? (
-        <Detail text={props.text} data={props.data}></Detail>
-      ) : (
-        props.data.message
-      )}
-    </Tooltip>
-  </>
-)
+function QueryToolTip(props: any) {
+  return (
+    <>
+      <style>{styleText}</style>
+      <Tooltip
+        trigger={
+          <div
+            style={{
+              height: '100%',
+              width: '100%'
+            }}></div>
+        }
+        className="tooltip"
+        open={props.open}
+        lockScroll={true}
+        position={[
+          'top center',
+          'bottom center',
+          'left center',
+          'right center'
+        ]}
+        on={'click'}
+        closeOnDocumentClick
+        keepTooltipInside={true}>
+        {props.data.code == 0 ? (
+          <Detail text={props.text} data={props.data} />
+        ) : (
+          props.data.message
+        )}
+      </Tooltip>
+    </>
+  )
+}
 
 export const getInlineAnchor: PlasmoGetInlineAnchor = async () =>
   document.querySelector('.xtooltip-query-anchor')
@@ -116,15 +119,14 @@ const renderRootContainer = async (rootContainer: HTMLElement) => {
 }
 
 export const render: PlasmoRender<PlasmoCSUIJSXContainer> = async ({
-  anchor, // the observed anchor, OR document.body.
   createRootContainer // This creates the default root container
 }) => {
   const rootContainer = await createRootContainer()
   if (rootContainer instanceof NodeList) {
     // console.log('Refresh! Root count:', rootContainer.length)
-    rootContainer.forEach(async (container) => {
+    rootContainer.forEach((container) => {
       const rootContainer = container as HTMLElement
-      await renderRootContainer(rootContainer)
+      renderRootContainer(rootContainer)
     })
   } else {
     await renderRootContainer(rootContainer as HTMLElement)
