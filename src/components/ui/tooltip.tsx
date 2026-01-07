@@ -157,13 +157,13 @@ const Tooltip: React.FC<TooltipProps> = ({
   const getArrowClasses = () => {
     switch (currentPosition) {
       case "top":
-        return "left-1/2 -translate-x-1/2 -bottom-[6px] border-t-[6px] border-t-[#eeeeee] dark:border-t-[#444444] border-x-transparent border-b-0 border-x-[6px]"
+        return "left-1/2 -translate-x-1/2 -bottom-[6px] border-t-[6px] border-t-surface border-x-transparent border-b-0 border-x-[6px]"
       case "bottom":
-        return "left-1/2 -translate-x-1/2 -top-[6px] border-b-[6px] border-b-[#eeeeee] dark:border-b-[#444444] border-x-transparent border-t-0 border-x-[6px]"
+        return "left-1/2 -translate-x-1/2 -top-[6px] border-b-[6px] border-b-surface border-x-transparent border-t-0 border-x-[6px]"
       case "left":
-        return "top-1/2 -translate-y-1/2 -right-[6px] border-l-[6px] border-l-[#eeeeee] dark:border-l-[#444444] border-y-transparent border-r-0 border-y-[6px]"
+        return "top-1/2 -translate-y-1/2 -right-[6px] border-l-[6px] border-l-surface border-y-transparent border-r-0 border-y-[6px]"
       case "right":
-        return "top-1/2 -translate-y-1/2 -left-[6px] border-r-[6px] border-r-[#eeeeee] dark:border-r-[#444444] border-y-transparent border-l-0 border-y-[6px]"
+        return "top-1/2 -translate-y-1/2 -left-[6px] border-r-[6px] border-r-surface border-y-transparent border-l-0 border-y-[6px]"
       default:
         return ""
     }
@@ -189,7 +189,7 @@ const Tooltip: React.FC<TooltipProps> = ({
             className={clsx(
               "select-none",
               "absolute z-50 p-5 rounded shadow-md w-[300px]",
-              "bg-[#eeeeee] text-[#444444] dark:bg-[#444444] dark:text-[#aaaaaa]",
+              "bg-surface text-text-primary",
               "transition-opacity duration-300 pointer-events-auto",
               getPositionClasses()
             )}

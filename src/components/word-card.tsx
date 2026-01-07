@@ -50,15 +50,15 @@ const WordCard: React.FC<WordCardProps> = ({ text, data }) => {
   return (
     <div className="flex flex-col w-full max-w-full">
       {/* Header */}
-      <div className="flex flex-row items-center justify-between gap-4 pb-2 mb-2 border-b border-gray-200 dark:border-gray-600">
-        <div className="text-xl font-bold text-gray-800 dark:text-gray-100 break-words">
+      <div className="flex flex-row items-center justify-between gap-4 pb-2 mb-2 border-b border-border">
+        <div className="text-xl font-bold text-text-primary break-words">
           {text}
         </div>
         <button
           className={clsx(
             "p-1.5 rounded-full transition-all duration-200",
-            "hover:bg-gray-100 dark:hover:bg-gray-700 active:scale-90",
-            "focus:outline-none focus:ring-2 focus:ring-blue-500/50",
+            "hover:bg-main/50 active:scale-90",
+            "focus:outline-none focus:ring-2 focus:ring-border-highlight/50",
             loading && "opacity-50 cursor-wait"
           )}
           onClick={handleToggleStar}
@@ -70,8 +70,8 @@ const WordCard: React.FC<WordCardProps> = ({ text, data }) => {
             className={clsx(
               "transition-colors duration-300",
               isStarred
-                ? "fill-yellow-400 text-yellow-500"
-                : "text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                ? "fill-star-fill text-star-text"
+                : "text-text-muted hover:text-text-primary"
             )}
           />
         </button>
@@ -81,20 +81,19 @@ const WordCard: React.FC<WordCardProps> = ({ text, data }) => {
       <div className={clsx(
         "flex flex-col gap-2 pr-1", // pr-1 for scrollbar spacing
         "max-h-[250px] overflow-y-auto scrollbar-thin",
-        "scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600",
-        "scrollbar-track-transparent"
+        "scrollbar-thumb-border scrollbar-track-transparent"
       )}>
         {data.definitions && data.definitions.length > 0 ? (
           data.definitions.map((definition, index) => (
             <div
               key={index}
-              className="text-sm leading-relaxed text-gray-600 dark:text-gray-300"
+              className="text-sm leading-relaxed text-text-muted"
             >
               {definition}
             </div>
           ))
         ) : (
-          <div className="text-sm italic text-gray-400">
+          <div className="text-sm italic text-text-muted/70">
             No definitions found.
           </div>
         )}

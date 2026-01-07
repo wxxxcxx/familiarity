@@ -29,14 +29,14 @@ class WordItem extends React.Component<{
       <div
         className={clsx(
           "flex flex-row items-center p-2.5 box-border w-full transition-all duration-500 rounded-sm",
-          "hover:bg-[#dddddd11]"
+          "hover:bg-main/50 text-text-primary"
         )}
       >
         <div className={clsx("flex-grow text-[1.2em] font-light")}>{this.props.word}</div>
         <button
           className={clsx(
-            "cursor-pointer text-inherit border-none outline-none text-[1.2em] transition-all duration-500 bg-transparent",
-            "hover:scale-[1.2] hover:rotate-[72deg]",
+            "cursor-pointer text-text-muted border-none outline-none text-[1.2em] transition-all duration-500 bg-transparent",
+            "hover:scale-[1.2] hover:rotate-[72deg] hover:text-star-text",
             "active:scale-[0.8]"
           )}
           onClick={this.unstar}
@@ -87,7 +87,7 @@ class WordList extends React.Component<{
           )
         })
       ) : (
-        <div className={clsx("text-[1.2em] font-light italic text-[#999] text-center p-2.5")}>No words starred yet.</div>
+        <div className={clsx("text-[1.2em] font-light italic text-text-muted text-center p-2.5")}>No words starred yet.</div>
       )
 
     return (
@@ -119,16 +119,16 @@ function Index() {
   return (
     <div
       className={clsx(
-        "box-border flex flex-col p-4 bg-[#eee] text-[#333] w-[300px]",
-        "dark:bg-[#444] dark:text-[#999] transition-colors duration-300"
+        "box-border flex flex-col p-4 w-[300px]",
+        "bg-surface text-text-primary transition-colors duration-300"
       )}
     >
       <div className="flex items-center gap-2 mb-2">
         <input
           className={clsx(
-            "text-[1.2em] border border-[#eee] bg-[#eee] text-[#333] rounded h-8 box-border px-2.5 flex-grow",
-            "focus:outline-none",
-            "dark:border-[#999] dark:bg-[#555] dark:text-[#ccc]"
+            "text-[1.2em] border border-border bg-input text-text-primary rounded h-8 box-border px-2.5 flex-grow",
+            "focus:outline-none focus:border-border-highlight",
+            "placeholder:text-text-muted/50"
           )}
           type="input"
           placeholder="Type to search words"
@@ -139,7 +139,7 @@ function Index() {
 
         <button
           onClick={openOptions}
-          className="p-1 rounded hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+          className="p-1 rounded hover:bg-main/50 transition-colors text-text-muted hover:text-text-primary"
           title="Settings"
         >
           <SettingsIcon size={20} />
