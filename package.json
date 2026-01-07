@@ -1,7 +1,7 @@
 {
   "name": "osmosis",
   "displayName": "Osmosis",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Osmosis helps you learn unfamiliar words by slowly seeping them into your memory.",
   "author": "W. <wxxxcxx@gmail.com>",
   "scripts": {
