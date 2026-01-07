@@ -188,7 +188,7 @@ const Tooltip: React.FC<TooltipProps> = ({
             ref={tooltipRef}
             className={clsx(
               "select-none",
-              "absolute z-50 p-5 rounded shadow-md min-w-[200px] max-w-[500px]",
+              "absolute z-50 p-5 rounded shadow-md w-[300px]",
               "bg-[#eeeeee] text-[#444444] dark:bg-[#444444] dark:text-[#aaaaaa]",
               "transition-opacity duration-300 pointer-events-auto",
               getPositionClasses()

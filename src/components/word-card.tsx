@@ -1,11 +1,12 @@
 import { clsx } from "clsx"
-import React from 'react'
+import { Star } from "lucide-react"
+import React, { useState } from 'react'
 
 import { sendToBackground } from '@plasmohq/messaging'
 
 import api from '~contents/renderer'
 
-class WordCard extends React.Component<{
+interface WordCardProps {
   text: string
   data: {
     code: number
@@ -13,82 +14,93 @@ class WordCard extends React.Component<{
     starred: boolean
     message: string | null
   }
-}> {
-  constructor(props: any) {
-    super(props)
-  }
+}
 
-  star = () => {
-    sendToBackground({
-      name: 'star',
-      body: {
-        key: this.props.text
-      }
-    }).then((response) => {
+const WordCard: React.FC<WordCardProps> = ({ text, data }) => {
+  const [isStarred, setIsStarred] = useState(data.starred)
+  const [loading, setLoading] = useState(false)
+
+  const handleToggleStar = async () => {
+    if (loading) return
+    setLoading(true)
+
+    const action = isStarred ? 'unstar' : 'star'
+
+    try {
+      const response = await sendToBackground({
+        name: action,
+        body: { key: text }
+      })
+
       if (response.code != 0) {
-        console.log(response.message)
+        console.error(response.message)
         return
       }
-      return api.renderer.render()
-    })
+
+      setIsStarred(!isStarred)
+      // Trigger re-render of highlights on the page
+      api.renderer.render()
+    } catch (error) {
+      console.error("Familiarity: Failed to toggle star", error)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  unstar = () => {
-    sendToBackground({
-      name: 'unstar',
-      body: {
-        key: this.props.text
-      }
-    }).then((response) => {
-      if (response.code != 0) {
-        console.log(response.message)
-        return
-      }
-      return api.renderer.render()
-    })
-  }
-
-  render() {
-    return (
-      <div className="detail">
-        <div className={clsx("flex flex-row items-center")}>
-          <div className={clsx("flex-grow text-[1.5em] font-bold")}>{this.props.text}</div>
-          {this.props.data?.starred ? (
-            <button
-              className={clsx(
-                "border-none outline-none text-[1.2em] bg-transparent text-inherit",
-                "transition-all duration-500 ease-in-out cursor-pointer",
-                "hover:scale-[1.2] hover:rotate-[72deg]",
-                "active:scale-[0.8]"
-              )}
-              autoFocus={false}
-              onClick={this.unstar}
-            >
-              ★
-            </button>
-          ) : (
-            <button
-              className={clsx(
-                "border-none outline-none text-[1.2em] bg-transparent text-inherit",
-                "transition-all duration-500 ease-in-out cursor-pointer",
-                "hover:scale-[1.2] hover:rotate-[72deg]",
-                "active:scale-[0.8]"
-              )}
-              autoFocus={false}
-              onClick={this.star}
-            >
-              ☆
-            </button>
+  return (
+    <div className="flex flex-col w-full max-w-full">
+      {/* Header */}
+      <div className="flex flex-row items-center justify-between gap-4 pb-2 mb-2 border-b border-gray-200 dark:border-gray-600">
+        <div className="text-xl font-bold text-gray-800 dark:text-gray-100 break-words">
+          {text}
+        </div>
+        <button
+          className={clsx(
+            "p-1.5 rounded-full transition-all duration-200",
+            "hover:bg-gray-100 dark:hover:bg-gray-700 active:scale-90",
+            "focus:outline-none focus:ring-2 focus:ring-blue-500/50",
+            loading && "opacity-50 cursor-wait"
           )}
-        </div>
-        <div className={clsx("mt-5")}>
-          {this.props.data?.definitions.map((definition) => {
-            return <p key={definition}>{definition}</p>
-          })}
-        </div>
+          onClick={handleToggleStar}
+          title={isStarred ? "Unstar" : "Star"}
+          disabled={loading}
+        >
+          <Star
+            size={20}
+            className={clsx(
+              "transition-colors duration-300",
+              isStarred
+                ? "fill-yellow-400 text-yellow-500"
+                : "text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+            )}
+          />
+        </button>
       </div>
-    )
-  }
+
+      {/* Content - Scrollable */}
+      <div className={clsx(
+        "flex flex-col gap-2 pr-1", // pr-1 for scrollbar spacing
+        "max-h-[250px] overflow-y-auto scrollbar-thin",
+        "scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600",
+        "scrollbar-track-transparent"
+      )}>
+        {data.definitions && data.definitions.length > 0 ? (
+          data.definitions.map((definition, index) => (
+            <div
+              key={index}
+              className="text-sm leading-relaxed text-gray-600 dark:text-gray-300"
+            >
+              {definition}
+            </div>
+          ))
+        ) : (
+          <div className="text-sm italic text-gray-400">
+            No definitions found.
+          </div>
+        )}
+      </div>
+    </div>
+  )
 }
 
 export default WordCard
