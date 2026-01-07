@@ -1,4 +1,5 @@
 import { clsx } from "clsx"
+import { AnimatePresence, motion } from "motion/react"
 import React, { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react"
 
 interface TooltipProps {
@@ -8,8 +9,6 @@ interface TooltipProps {
   className?: string
   position?: "top" | "bottom" | "left" | "right" | "auto"
   on?: "hover" | "click" | string[]
-
-
 }
 
 const Tooltip: React.FC<TooltipProps> = ({
@@ -62,9 +61,12 @@ const Tooltip: React.FC<TooltipProps> = ({
     }
   }
 
-
-
   useLayoutEffect(() => {
+    /* 
+      Use a fresh ref query if possible or ensure ref is attached.
+      If visible is false -> true, element is mounted, ref should be current.
+      However, with AnimatePresence, it might be exiting? No, visible controls entry.
+    */
     if (visible && tooltipRef.current && triggerRef.current) {
       if (position !== "auto") {
         setCurrentPosition(position)
@@ -142,6 +144,7 @@ const Tooltip: React.FC<TooltipProps> = ({
   const getPositionClasses = () => {
     switch (currentPosition) {
       case "top":
+        // mb-2 creates space, transform handles centering
         return "bottom-full left-1/2 -translate-x-1/2 mb-2"
       case "bottom":
         return "top-full left-1/2 -translate-x-1/2 mt-2"
@@ -169,12 +172,42 @@ const Tooltip: React.FC<TooltipProps> = ({
     }
   }
 
+  // Animation variants
+  const variants = {
+    top: {
+      initial: { opacity: 0, y: 8, x: "-50%" },
+      animate: { opacity: 1, y: 0, x: "-50%" },
+      exit: { opacity: 0, y: 8, x: "-50%" }
+    },
+    bottom: {
+      initial: { opacity: 0, y: -8, x: "-50%" },
+      animate: { opacity: 1, y: 0, x: "-50%" },
+      exit: { opacity: 0, y: -8, x: "-50%" }
+    },
+    left: {
+      initial: { opacity: 0, x: 8, y: "-50%" },
+      animate: { opacity: 1, x: 0, y: "-50%" },
+      exit: { opacity: 0, x: 8, y: "-50%" }
+    },
+    right: {
+      initial: { opacity: 0, x: -8, y: "-50%" },
+      animate: { opacity: 1, x: 0, y: "-50%" },
+      exit: { opacity: 0, x: -8, y: "-50%" }
+    }
+  }
+
+  // NOTE: Tailwind classes for positioning include transforms (e.g., -translate-x-1/2).
+  // Motion overrides style.transform.
+  // We MUST include the structural transforms (centering) in the variants so they aren't lost.
+  // getPositionClasses returns things like: "left-1/2 -translate-x-1/2".
+  // "-translate-x-1/2" is `transform: translateX(-50%)`.
+  // So variants must include `x: "-50%"` etc matching the tailwind class logic.
+
   return (
     <div
       className={clsx("relative inline-block", className)}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-
     >
       {trigger && (
         <div ref={triggerRef} onClick={handleClick} className="inline-block">
@@ -182,21 +215,39 @@ const Tooltip: React.FC<TooltipProps> = ({
         </div>
       )}
 
-      {visible && (
-        <>
-          <div
+      <AnimatePresence>
+        {visible && (
+          <motion.div
             ref={tooltipRef}
             className={clsx(
               "select-none",
               "absolute z-50 p-5 rounded shadow-md w-[300px]",
               "bg-surface text-text-primary",
-              "transition-opacity duration-300 pointer-events-auto",
-              getPositionClasses()
+              "pointer-events-auto",
+              // remove transition-opacity since motion handles it
+              // remove the translate classes from CSS effectively?
+              // Actually, we can keep the positioning classes (top, left)
+              // But we should remove the transform classes (-translate-x-1/2) from tailwind
+              // OR let motion handle the transform entirely.
+              // Let's modify getPositionClasses to NOT include transforms, and rely on variants.
+              // See `getPositionClasses` below logic update.
+              // Re-check getPositionClasses:
+              //   case "top": "bottom-full left-1/2 -translate-x-1/2 mb-2"
+              //   The variants I defined above cover the x/y translation.
+              //   So I should probably STRIP the transform classes from `getPositionClasses` or rely on Motion to merge/override?
+              //   Motion usually overrides. To be safe, rely on variants for the alignment transform.
+              //   "left-1/2" sets left: 50%. Variant x: "-50%" centers it. Correct.
+              getPositionClasses().replace(/-translate-[xy]-1\/2/g, '').trim()
             )}
             style={{
               marginLeft: offset.x,
               marginTop: offset.y
             }}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            variants={variants[currentPosition]}
+            transition={{ type: "spring", stiffness: 500, damping: 30 }}
             onMouseDown={(e) => {
               e.stopPropagation()
               e.preventDefault() // Prevent selection clearing
@@ -217,9 +268,9 @@ const Tooltip: React.FC<TooltipProps> = ({
                 marginTop: -offset.y
               }}
             ></div>
-          </div>
-        </>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
