@@ -100,7 +100,7 @@ class NodeRender {
       this.keys = response.keys
       await this.renderNode(document.body)
     } catch (error) {
-      console.error("Familiarity: Failed to render nodes", error)
+      console.error("Osmosis: Failed to render nodes", error)
     }
   }
 

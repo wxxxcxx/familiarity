@@ -34,7 +34,7 @@ function Options() {
 
     return (
         <div className={clsx("p-8 max-w-2xl mx-auto font-sans text-[#333] dark:text-[#ccc]")}>
-            <h1 className="text-2xl font-bold mb-6">Familiarity Settings</h1>
+            <h1 className="text-2xl font-bold mb-6">Osmosis Settings</h1>
 
             <div className="space-y-6">
                 {/* Translation Toggle */}

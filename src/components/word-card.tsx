@@ -41,7 +41,7 @@ const WordCard: React.FC<WordCardProps> = ({ text, data }) => {
       // Trigger re-render of highlights on the page
       api.renderer.render()
     } catch (error) {
-      console.error("Familiarity: Failed to toggle star", error)
+      console.error("Osmosis: Failed to toggle star", error)
     } finally {
       setLoading(false)
     }

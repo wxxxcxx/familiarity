@@ -1,8 +1,8 @@
 {
-  "name": "familiarity",
-  "displayName": "Familiarity",
+  "name": "osmosis",
+  "displayName": "Osmosis",
   "version": "0.0.1",
-  "description": "Familiarity is a browser extension that helps you learn unfamiliar words.",
+  "description": "Osmosis helps you learn unfamiliar words by slowly seeping them into your memory.",
   "author": "W. <wxxxcxx@gmail.com>",
   "scripts": {
     "plasmo": "plasmo",
