@@ -20,6 +20,15 @@ module.exports = {
 
         "star-fill": "var(--color-star-fill)",
         "star-text": "var(--color-star-text)"
+      },
+      keyframes: {
+        "text-swing-scroll": {
+          '0%': { left: '0', transform: 'translateX(0)' },
+          '100%': { left: '100%', transform: 'translateX(-100%)' },
+        }
+      },
+      animation: {
+        "text-swing-scroll": 'text-swing-scroll 10s linear infinite alternate',
       }
     }
   },

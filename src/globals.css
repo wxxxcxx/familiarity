@@ -36,4 +36,8 @@
     --color-star-fill: #fbbf24;
     --color-star-text: #f59e0b;
   }
+
+  body {
+    @apply bg-main text-text-primary transition-colors duration-300;
+  }
 }

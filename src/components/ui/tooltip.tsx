@@ -220,7 +220,6 @@ const Tooltip: React.FC<TooltipProps> = ({
           <motion.div
             ref={tooltipRef}
             className={clsx(
-              "select-none",
               "absolute z-50 p-5 rounded shadow-md w-[300px]",
               "bg-surface text-text-primary",
               "pointer-events-auto",

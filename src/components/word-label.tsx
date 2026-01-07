@@ -38,9 +38,12 @@ const WordLabel = ({
     <span
       className={clsx(
         "relative cursor-pointer overflow-visible mb-1",
-        "underline decoration-[rgb(57,136,255)] decoration-auto underline-offset-2",
+        "underline decoration-auto underline-offset-2",
         getDecorationClass()
       )}
+      style={{
+        textDecorationColor: settings.highlightColor
+      }}
     >
       {text}
       {data &&
@@ -49,12 +52,19 @@ const WordLabel = ({
         settings.showTranslation && (
           <span
             className={clsx(
-              "absolute -top-[0.6em] left-0 w-full h-[1em] z-[999]",
-              "text-[0.7em] leading-[1em] text-[#f97878] select-none",
-              "overflow-hidden whitespace-nowrap text-ellipsis"
+              "absolute -top-[0.6em] left-0 w-full rounded-sm z-[999]",
+              "text-[0.6em] leading-[1em] select-none",
+              "overflow-hidden whitespace-nowrap block",
+              "select-none"
             )}
+            style={{
+              backgroundColor: settings.translationBgColor,
+              color: settings.translationTextColor
+            }}
           >
-            {data.definitions[0]}
+            <span className="inline-block relative animate-text-swing-scroll px-1">
+              {data.definitions[0]}
+            </span>
           </span>
         )}
     </span>

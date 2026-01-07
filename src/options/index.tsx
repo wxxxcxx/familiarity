@@ -96,6 +96,50 @@ function Options() {
                     </select>
                 </div>
 
+                {/* Colors Configuration */}
+                <div className="flex flex-col gap-4 p-4 bg-gray-100 dark:bg-[#444] rounded-lg">
+                    <h3 className="font-semibold text-lg">Colors</h3>
+
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <span className="font-medium text-sm">Highlight Color</span>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">Color of the underline</p>
+                        </div>
+                        <input
+                            type="color"
+                            className="h-8 w-14 cursor-pointer rounded border border-gray-300 dark:border-gray-600 bg-transparent p-0.5"
+                            value={settings.highlightColor}
+                            onChange={(e) => setSettings((prev) => ({ ...prev, highlightColor: e.target.value }))}
+                        />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <span className="font-medium text-sm">Translation Background</span>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">Background of the translation pill</p>
+                        </div>
+                        <input
+                            type="color"
+                            className="h-8 w-14 cursor-pointer rounded border border-gray-300 dark:border-gray-600 bg-transparent p-0.5"
+                            value={settings.translationBgColor}
+                            onChange={(e) => setSettings((prev) => ({ ...prev, translationBgColor: e.target.value }))}
+                        />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <span className="font-medium text-sm">Translation Text</span>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">Foreground color of text</p>
+                        </div>
+                        <input
+                            type="color"
+                            className="h-8 w-14 cursor-pointer rounded border border-gray-300 dark:border-gray-600 bg-transparent p-0.5"
+                            value={settings.translationTextColor}
+                            onChange={(e) => setSettings((prev) => ({ ...prev, translationTextColor: e.target.value }))}
+                        />
+                    </div>
+                </div>
+
             </div>
         </div>
     )
