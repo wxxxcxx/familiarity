@@ -30,7 +30,13 @@ const Tooltip: React.FC<TooltipProps> = ({
   const tooltipRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLDivElement>(null)
 
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
   const handleMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
     if (!isControlled && (on === "hover" || (Array.isArray(on) && on.includes("hover")))) {
       setIsOpen(true)
     }
@@ -38,9 +44,19 @@ const Tooltip: React.FC<TooltipProps> = ({
 
   const handleMouseLeave = () => {
     if (!isControlled && (on === "hover" || (Array.isArray(on) && on.includes("hover")))) {
-      setIsOpen(false)
+      timeoutRef.current = setTimeout(() => {
+        setIsOpen(false)
+      }, 200)
     }
   }
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
 
   const handleClick = (e: React.MouseEvent) => {
     if (!isControlled && (on === "click" || (Array.isArray(on) && on.includes("click")))) {
