@@ -9,8 +9,7 @@ interface TooltipProps {
   position?: "top" | "bottom" | "left" | "right" | "auto"
   on?: "hover" | "click" | string[]
 
-  keepTooltipInside?: boolean
-  lockScroll?: boolean
+
 }
 
 const Tooltip: React.FC<TooltipProps> = ({
@@ -25,6 +24,7 @@ const Tooltip: React.FC<TooltipProps> = ({
   const visible = isOpen
 
   const [currentPosition, setCurrentPosition] = useState<"top" | "bottom" | "left" | "right">("bottom")
+  const [offset, setOffset] = useState({ x: 0, y: 0 })
   const tooltipRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLDivElement>(null)
 
@@ -102,6 +102,40 @@ const Tooltip: React.FC<TooltipProps> = ({
       }
 
       setCurrentPosition(newPos)
+
+      let offsetX = 0
+      let offsetY = 0
+
+      // We need to re-measure or estimate because position change might affect rect
+      // For simplicity, we calculate based on the decided newPos relative to trigger
+      // This is an approximation as we can't force a reflow cleanly inside the same effect without complexity
+      // Better strategy: Calculate theoretical position of Tooltip center
+
+      const triggerCenter = triggerRect.left + triggerRect.width / 2
+      const triggerMiddle = triggerRect.top + triggerRect.height / 2
+
+      if (newPos === 'top' || newPos === 'bottom') {
+        const tooltipLeft = triggerCenter - tooltipRect.width / 2
+        const tooltipRight = triggerCenter + tooltipRect.width / 2
+
+        if (tooltipLeft < 10) {
+          offsetX = 10 - tooltipLeft
+        } else if (tooltipRight > viewportWidth - 10) {
+          offsetX = (viewportWidth - 10) - tooltipRight
+        }
+      } else {
+        // left or right
+        const tooltipTop = triggerMiddle - tooltipRect.height / 2
+        const tooltipBottom = triggerMiddle + tooltipRect.height / 2
+
+        if (tooltipTop < 10) {
+          offsetY = 10 - tooltipTop
+        } else if (tooltipBottom > viewportHeight - 10) {
+          offsetY = (viewportHeight - 10) - tooltipBottom
+        }
+      }
+
+      setOffset({ x: offsetX, y: offsetY })
     }
   }, [visible, position, children])
 
@@ -149,31 +183,42 @@ const Tooltip: React.FC<TooltipProps> = ({
       )}
 
       {visible && (
-        <div
-          ref={tooltipRef}
-          className={clsx(
-            "select-none",
-            "absolute z-50 p-5 rounded shadow-md min-w-[200px] max-w-[500px]",
-            "bg-[#eeeeee] text-[#444444] dark:bg-[#444444] dark:text-[#aaaaaa]",
-            "transition-opacity duration-300 pointer-events-auto",
-            getPositionClasses()
-          )}
-          onMouseDown={(e) => {
-            e.stopPropagation()
-            e.preventDefault() // Prevent selection clearing
-          }}
-          onMouseUp={(e) => e.stopPropagation()}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="text-[13px] font-normal select-auto">
-            {children}
+        <>
+          <div
+            ref={tooltipRef}
+            className={clsx(
+              "select-none",
+              "absolute z-50 p-5 rounded shadow-md min-w-[200px] max-w-[500px]",
+              "bg-[#eeeeee] text-[#444444] dark:bg-[#444444] dark:text-[#aaaaaa]",
+              "transition-opacity duration-300 pointer-events-auto",
+              getPositionClasses()
+            )}
+            style={{
+              marginLeft: offset.x,
+              marginTop: offset.y
+            }}
+            onMouseDown={(e) => {
+              e.stopPropagation()
+              e.preventDefault() // Prevent selection clearing
+            }}
+            onMouseUp={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="text-[13px] font-normal select-auto">
+              {children}
+            </div>
+            {/* Arrow */}
+            <div className={clsx(
+              "absolute w-0 h-0",
+              getArrowClasses()
+            )}
+              style={{
+                marginLeft: -offset.x,
+                marginTop: -offset.y
+              }}
+            ></div>
           </div>
-          {/* Arrow */}
-          <div className={clsx(
-            "absolute w-0 h-0",
-            getArrowClasses()
-          )}></div>
-        </div>
+        </>
       )}
     </div>
   )

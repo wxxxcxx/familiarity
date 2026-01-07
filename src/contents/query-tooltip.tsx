@@ -18,7 +18,15 @@ import Tooltip from '../components/ui/tooltip'
 
 const querySelection = (e: MouseEvent) => {
   document.querySelectorAll('.xtooltip-query-anchor').forEach((element) => {
-    element.remove()
+    const root = (element as any)._reactRoot
+    if (root) {
+      setTimeout(() => {
+        root.unmount()
+        element.remove()
+      }, 0)
+    } else {
+      element.remove()
+    }
   })
 
   const selection = window.getSelection()
@@ -78,7 +86,6 @@ function QueryToolTip(props: any) {
         className="tooltip"
         defaultOpen={true}
         on={'click'}
-        lockScroll
       >
         {props.data.code == 0 ? (
           <WordCard text={props.text} data={props.data} />
@@ -112,6 +119,7 @@ const renderRootContainer = async (rootContainer: HTMLElement) => {
   }
   const shadow = rootContainer.attachShadow({ mode: 'open' })
   const root = createRoot(shadow)
+    ; (rootContainer as any)._reactRoot = root
   const key = rootContainer.dataset.key
   const text = rootContainer.dataset.text
   try {
