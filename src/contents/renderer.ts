@@ -93,11 +93,15 @@ class NodeRender {
   }
 
   async render() {
-    const response = await sendToBackground({
-      name: 'list'
-    })
-    this.keys = response.keys
-    await this.renderNode(document.body)
+    try {
+      const response = await sendToBackground({
+        name: 'list'
+      })
+      this.keys = response.keys
+      await this.renderNode(document.body)
+    } catch (error) {
+      console.error("Familiarity: Failed to render nodes", error)
+    }
   }
 
   observe() {

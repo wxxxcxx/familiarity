@@ -14,12 +14,16 @@ import WordLabel from '../components/word-label'
 import Tooltip from '../components/ui/tooltip'
 import api from './renderer'
 
-  ; (async () => {
-    window.addEventListener('load', async () => {
+(async () => {
+  window.addEventListener('load', async () => {
+    try {
       await api.renderer.render()
       api.renderer.observe()
-    })
-  })()
+    } catch (error) {
+      console.error("Familiarity: Failed to initialize renderer", error)
+    }
+  })
+})()
 
 function StarTooltip(props: any) {
   return (
@@ -68,13 +72,17 @@ const renderRootContainer = async (rootContainer: HTMLElement) => {
   const root = createRoot(shadow)
   const key = rootContainer.dataset.key
   const text = rootContainer.dataset.text
-  const response = await sendToBackground({
-    name: 'query',
-    body: {
-      key: key
-    }
-  })
-  root.render(<StarTooltip text={text} data={response}></StarTooltip>)
+  try {
+    const response = await sendToBackground({
+      name: 'query',
+      body: {
+        key: key
+      }
+    })
+    root.render(<StarTooltip text={text} data={response}></StarTooltip>)
+  } catch (error) {
+    console.error("Familiarity: Failed to render tooltip content", error)
+  }
 }
 
 export const render: PlasmoRender<PlasmoCSUIJSXContainer> = async ({

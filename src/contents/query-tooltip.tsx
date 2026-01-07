@@ -99,15 +99,19 @@ const renderRootContainer = async (rootContainer: HTMLElement) => {
   const root = createRoot(shadow)
   const key = rootContainer.dataset.key
   const text = rootContainer.dataset.text
-  const response = await sendToBackground({
-    name: 'query',
-    body: {
-      key: key
-    }
-  })
-  root.render(
-    <QueryToolTip open={true} text={text} data={response}></QueryToolTip>
-  )
+  try {
+    const response = await sendToBackground({
+      name: 'query',
+      body: {
+        key: key
+      }
+    })
+    root.render(
+      <QueryToolTip open={true} text={text} data={response}></QueryToolTip>
+    )
+  } catch (error) {
+    console.error("Familiarity: Failed to render query tooltip", error)
+  }
 }
 
 export const render: PlasmoRender<PlasmoCSUIJSXContainer> = async ({
