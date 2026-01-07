@@ -79,7 +79,7 @@ function QueryToolTip(props: any) {
   }, [settings?.theme])
 
   return (
-    <div className={clsx('inline', { "dark": isDark })}>
+    <div className={clsx('inline theme-root', { "dark": isDark })}>
       <style>{styleText}</style>
       <Tooltip
         trigger={<span className={clsx("select-none invisible")}>{props.text}</span>}

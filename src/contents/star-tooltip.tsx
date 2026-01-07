@@ -47,7 +47,7 @@ function StarTooltip(props: any) {
   }, [settings?.theme])
 
   return (
-    <div className={clsx("inline", { "dark": isDark })}>
+    <div className={clsx("inline theme-root", { "dark": isDark })}>
       <style>{styleText}</style>
       <Tooltip
         trigger={

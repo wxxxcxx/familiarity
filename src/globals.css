@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
+  :root, .theme-root {
     /* Light Mode Palette */
     --color-bg-main: #f8f9fa;
     --color-bg-surface: #eeeeee;
