@@ -152,6 +152,7 @@ const Tooltip: React.FC<TooltipProps> = ({
         <div
           ref={tooltipRef}
           className={clsx(
+            "select-none",
             "absolute z-50 p-5 rounded shadow-md min-w-[200px] max-w-[500px]",
             "bg-[#eeeeee] text-[#444444] dark:bg-[#444444] dark:text-[#aaaaaa]",
             "transition-opacity duration-300 pointer-events-auto",
@@ -164,7 +165,7 @@ const Tooltip: React.FC<TooltipProps> = ({
           onMouseUp={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="text-[13px] font-normal">
+          <div className="text-[13px] font-normal select-auto">
             {children}
           </div>
           {/* Arrow */}

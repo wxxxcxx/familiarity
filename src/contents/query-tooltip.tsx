@@ -74,13 +74,7 @@ function QueryToolTip(props: any) {
     <div className={clsx('inline', { "dark": isDark })}>
       <style>{styleText}</style>
       <Tooltip
-        trigger={
-          <div
-            style={{
-              height: '100%',
-              width: '100%'
-            }}></div>
-        }
+        trigger={<span className={clsx("select-none invisible")}>{props.text}</span>}
         className="tooltip"
         defaultOpen={true}
         on={'click'}
