@@ -9,6 +9,8 @@ import { createRoot } from 'react-dom/client'
 
 import { sendToBackground } from '@plasmohq/messaging'
 
+import { clsx } from 'clsx'
+import { useSettings } from '../utils/settings'
 import WordCard from '../components/word-card'
 import WordLabel from '../components/word-label'
 import Tooltip from '../components/ui/tooltip'
@@ -26,8 +28,26 @@ import api from './renderer'
 })()
 
 function StarTooltip(props: any) {
+  const [settings] = useSettings()
+  const [isDark, setIsDark] = React.useState(false)
+
+  React.useEffect(() => {
+    if (!settings) return
+    const checkDark = () => {
+      if (settings.theme === "dark" || (settings.theme === "auto" && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        setIsDark(true)
+      } else {
+        setIsDark(false)
+      }
+    }
+    checkDark()
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+    mediaQuery.addEventListener("change", checkDark)
+    return () => mediaQuery.removeEventListener("change", checkDark)
+  }, [settings?.theme])
+
   return (
-    <>
+    <div className={clsx("inline", { "dark": isDark })}>
       <style>{styleText}</style>
       <Tooltip
         trigger={
@@ -44,7 +64,7 @@ function StarTooltip(props: any) {
           props.data.message
         )}
       </Tooltip>
-    </>
+    </div>
   )
 }
 

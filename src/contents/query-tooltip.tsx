@@ -11,6 +11,8 @@ import { sendToBackground } from '@plasmohq/messaging'
 
 import { isEnglishWord } from '~utils'
 
+import { clsx } from "clsx"
+import { useSettings } from "../utils/settings"
 import WordCard from '../components/word-card'
 import Tooltip from '../components/ui/tooltip'
 
@@ -50,8 +52,26 @@ const querySelection = (e: MouseEvent) => {
 document.body.addEventListener('mouseup', querySelection)
 
 function QueryToolTip(props: any) {
+  const [settings] = useSettings()
+  const [isDark, setIsDark] = React.useState(false)
+
+  React.useEffect(() => {
+    if (!settings) return
+    const checkDark = () => {
+      if (settings.theme === "dark" || (settings.theme === "auto" && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        setIsDark(true)
+      } else {
+        setIsDark(false)
+      }
+    }
+    checkDark()
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+    mediaQuery.addEventListener("change", checkDark)
+    return () => mediaQuery.removeEventListener("change", checkDark)
+  }, [settings?.theme])
+
   return (
-    <>
+    <div className={clsx('inline', { "dark": isDark })}>
       <style>{styleText}</style>
       <Tooltip
         trigger={
@@ -71,7 +91,7 @@ function QueryToolTip(props: any) {
           props.data.message
         )}
       </Tooltip>
-    </>
+    </div>
   )
 }
 
