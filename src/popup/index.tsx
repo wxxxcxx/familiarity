@@ -1,108 +1,11 @@
 import type { PlasmoGetStyle } from 'plasmo'
 import React, { useState, type ReactNode } from 'react'
-import styled from 'styled-components'
+import { clsx } from "clsx"
+
+import "../globals.css"
+
 
 import { sendToBackground } from '@plasmohq/messaging'
-
-const styleContent = `
-  body {
-    background-color: transparent;
-    margin: 0px;
-    padding: 0px;
-  }
-`
-
-const Wrapper = styled.div`
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  background-color: #eee;
-  color: #333;
-  width: 300px;
-  @media screen and (prefers-color-scheme: dark) {
-    & {
-      background-color: #444;
-      color: #999;
-    }
-  }
-`
-
-const ListWrapper = styled.div`
-  margin-top: 20px;
-  width: 100%;
-  max-height: 500px;
-  overflow-y: auto;
-`
-
-const ItemWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 10px;
-  box-sizing: border-box;
-  width: 100%;
-  transition: all 500ms ease;
-  border-radius: 4px;
-
-  &:hover {
-    background-color: #dddddd11;
-  }
-`
-
-const ItemTitle = styled.div`
-  flex-grow: 1;
-  font-size: 1.2em;
-  font-weight: 400;
-`
-const ItemButton = styled.button`
-  cursor: pointer;
-  color: inherit;
-  border: none;
-  outline: none;
-  font-size: 1.2em;
-  transition: all 500ms ease;
-  background: transparent;
-
-  &:hover {
-    transform: scale(1.2, 1.2) rotate(0.2turn);
-  }
-  &:active {
-    transform: scale(0.8, 0.8);
-  }
-`
-
-const Search = styled.input`
-  font-size: 1.2em;
-  border: 1px solid #eee;
-  background-color: #eee;
-  color: #333;
-  border-radius: 4px;
-  line-height: 2em;
-  height: 2em;
-  width: 100%;
-  &:focus {
-    outline: none;
-  }
-  box-sizing: border-box;
-  padding: 0 10px;
-  @media screen and (prefers-color-scheme: dark) {
-    & {
-      border: 1px solid #999;
-      background-color: #555;
-      color: #ccc;
-    }
-  }
-`
-
-const EmplyList = styled.div`
-  font-size: 1.2em;
-  font-weight: 200;
-  font-style: italic;
-  color: #999;
-  text-align: center;
-  padding: 10px;
-`
 
 class WordItem extends React.Component<{
   word: string
@@ -121,10 +24,24 @@ class WordItem extends React.Component<{
 
   render(): ReactNode {
     return (
-      <ItemWrapper>
-        <ItemTitle>{this.props.word}</ItemTitle>
-        <ItemButton onClick={this.unstar}>★</ItemButton>
-      </ItemWrapper>
+      <div
+        className={clsx(
+          "flex flex-row items-center p-2.5 box-border w-full transition-all duration-500 rounded-sm",
+          "hover:bg-[#dddddd11]"
+        )}
+      >
+        <div className={clsx("flex-grow text-[1.2em] font-light")}>{this.props.word}</div>
+        <button
+          className={clsx(
+            "cursor-pointer text-inherit border-none outline-none text-[1.2em] transition-all duration-500 bg-transparent",
+            "hover:scale-[1.2] hover:rotate-[72deg]",
+            "active:scale-[0.8]"
+          )}
+          onClick={this.unstar}
+        >
+          ★
+        </button>
+      </div>
     )
   }
 }
@@ -168,10 +85,12 @@ class WordList extends React.Component<{
           )
         })
       ) : (
-        <EmplyList>No words starred yet.</EmplyList>
+        <div className={clsx("text-[1.2em] font-light italic text-[#999] text-center p-2.5")}>No words starred yet.</div>
       )
 
-    return <ListWrapper>{inner}</ListWrapper>
+    return (
+      <div className={clsx("mt-5 w-full max-h-[500px] overflow-y-auto")}>{inner}</div>
+    )
   }
 }
 
@@ -179,21 +98,30 @@ function Index() {
   const [filterKey, setFilterKey] = useState('')
 
   return (
-    <Wrapper>
-      <style>{styleContent}</style>
+    <div
+      className={clsx(
+        "box-border flex flex-col p-4 bg-[#eee] text-[#333] w-[300px]",
+        "dark:bg-[#444] dark:text-[#999]"
+      )}
+    >
       <div>
-        <Search
+        <input
+          className={clsx(
+            "text-[1.2em] border border-[#eee] bg-[#eee] text-[#333] rounded h-8 w-full box-border px-2.5",
+            "focus:outline-none",
+            "dark:border-[#999] dark:bg-[#555] dark:text-[#ccc]"
+          )}
           type="input"
           placeholder="Type to search words"
           onChange={(event) => {
             setFilterKey(event.target.value)
           }}
-          value={filterKey}></Search>
+          value={filterKey}></input>
       </div>
       <div>
         <WordList filterKey={filterKey}></WordList>
       </div>
-    </Wrapper>
+    </div>
   )
 }
 

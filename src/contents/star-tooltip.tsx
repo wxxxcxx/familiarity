@@ -1,4 +1,4 @@
-import styleText from 'data-text:./style.css'
+import styleText from 'data-text:../globals.css'
 import type {
   PlasmoCSUIJSXContainer,
   PlasmoGetInlineAnchorList,
@@ -14,12 +14,12 @@ import Label from '../components/lable'
 import Tooltip from '../components/tooltip'
 import api from './renderer'
 
-;(async () => {
-  window.addEventListener('load', async () => {
-    await api.renderer.render()
-    api.renderer.observe()
-  })
-})()
+  ; (async () => {
+    window.addEventListener('load', async () => {
+      await api.renderer.render()
+      api.renderer.observe()
+    })
+  })()
 
 function StarTooltip(props: any) {
   return (
@@ -32,15 +32,8 @@ function StarTooltip(props: any) {
           </span>
         }
         className="tooltip"
-        position={[
-          'top center',
-          'bottom center',
-          'left center',
-          'right center'
-        ]}
         on={'hover'}
-        closeOnDocumentClick
-        keepTooltipInside={true}>
+        closeOnDocumentClick>
         {props.data.code == 0 ? (
           <Detail text={props.text} data={props.data}></Detail>
         ) : (

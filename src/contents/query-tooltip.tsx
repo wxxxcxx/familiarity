@@ -1,4 +1,4 @@
-import styleText from 'data-text:./style.css'
+import styleText from 'data-text:../globals.css'
 import type {
   PlasmoCSUIJSXContainer,
   PlasmoGetInlineAnchor,
@@ -63,16 +63,8 @@ function QueryToolTip(props: any) {
         }
         className="tooltip"
         open={props.open}
-        lockScroll={true}
-        position={[
-          'top center',
-          'bottom center',
-          'left center',
-          'right center'
-        ]}
         on={'click'}
-        closeOnDocumentClick
-        keepTooltipInside={true}>
+        closeOnDocumentClick>
         {props.data.code == 0 ? (
           <Detail text={props.text} data={props.data} />
         ) : (

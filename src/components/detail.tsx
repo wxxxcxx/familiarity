@@ -1,40 +1,9 @@
+import { clsx } from "clsx"
 import React from 'react'
-import styled from 'styled-components'
 
 import { sendToBackground } from '@plasmohq/messaging'
 
 import api from '~contents/renderer'
-
-const Header = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`
-const Title = styled.div`
-  flex-grow: 1;
-  font-size: 1.5em;
-  font-weight: bold;
-`
-const Button = styled.button`
-  border: none;
-  outline: none;
-  font-size: 1.2em;
-  transition: all 500ms ease;
-  background: transparent;
-  color: inherit;
-
-  &:hover {
-    transform: scale(1.2, 1.2) rotate(0.2turn);
-  }
-
-  &:active {
-    transform: scale(0.8, 0.8);
-  }
-`
-
-const Definitions = styled.div`
-  margin-top: 20px;
-`
 
 class Detail extends React.Component<{
   text: string
@@ -82,23 +51,41 @@ class Detail extends React.Component<{
   render() {
     return (
       <div className="detail">
-        <Header>
-          <Title>{this.props.text}</Title>
+        <div className={clsx("flex flex-row items-center")}>
+          <div className={clsx("flex-grow text-[1.5em] font-bold")}>{this.props.text}</div>
           {this.props.data?.starred ? (
-            <Button autoFocus={false} onClick={this.unstar}>
+            <button
+              className={clsx(
+                "border-none outline-none text-[1.2em] bg-transparent text-inherit",
+                "transition-all duration-500 ease-in-out cursor-pointer",
+                "hover:scale-[1.2] hover:rotate-[72deg]",
+                "active:scale-[0.8]"
+              )}
+              autoFocus={false}
+              onClick={this.unstar}
+            >
               ★
-            </Button>
+            </button>
           ) : (
-            <Button autoFocus={false} onClick={this.star}>
+            <button
+              className={clsx(
+                "border-none outline-none text-[1.2em] bg-transparent text-inherit",
+                "transition-all duration-500 ease-in-out cursor-pointer",
+                "hover:scale-[1.2] hover:rotate-[72deg]",
+                "active:scale-[0.8]"
+              )}
+              autoFocus={false}
+              onClick={this.star}
+            >
               ☆
-            </Button>
+            </button>
           )}
-        </Header>
-        <Definitions>
+        </div>
+        <div className={clsx("mt-5")}>
           {this.props.data?.definitions.map((definition) => {
             return <p key={definition}>{definition}</p>
           })}
-        </Definitions>
+        </div>
       </div>
     )
   }
