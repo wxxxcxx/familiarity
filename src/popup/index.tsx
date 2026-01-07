@@ -1,11 +1,13 @@
-import type { PlasmoGetStyle } from 'plasmo'
-import React, { useState, type ReactNode } from 'react'
 import { clsx } from "clsx"
+import React, { useState, type ReactNode, useEffect } from "react"
+import { Settings as SettingsIcon } from "lucide-react"
 
 import "../globals.css"
 
+import { sendToBackground } from "@plasmohq/messaging"
+import { useSettings } from "../utils/settings"
 
-import { sendToBackground } from '@plasmohq/messaging'
+// ... WordItem and WordList components remain unchanged ...
 
 class WordItem extends React.Component<{
   word: string
@@ -96,18 +98,35 @@ class WordList extends React.Component<{
 
 function Index() {
   const [filterKey, setFilterKey] = useState('')
+  const [settings] = useSettings()
+
+  useEffect(() => {
+    if (settings.theme === "dark" || (settings.theme === "auto" && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+      document.documentElement.classList.add("dark")
+    } else {
+      document.documentElement.classList.remove("dark")
+    }
+  }, [settings.theme])
+
+  const openOptions = () => {
+    if (chrome.runtime.openOptionsPage) {
+      chrome.runtime.openOptionsPage()
+    } else {
+      window.open(chrome.runtime.getURL('options.html'))
+    }
+  }
 
   return (
     <div
       className={clsx(
         "box-border flex flex-col p-4 bg-[#eee] text-[#333] w-[300px]",
-        "dark:bg-[#444] dark:text-[#999]"
+        "dark:bg-[#444] dark:text-[#999] transition-colors duration-300"
       )}
     >
-      <div>
+      <div className="flex items-center gap-2 mb-2">
         <input
           className={clsx(
-            "text-[1.2em] border border-[#eee] bg-[#eee] text-[#333] rounded h-8 w-full box-border px-2.5",
+            "text-[1.2em] border border-[#eee] bg-[#eee] text-[#333] rounded h-8 box-border px-2.5 flex-grow",
             "focus:outline-none",
             "dark:border-[#999] dark:bg-[#555] dark:text-[#ccc]"
           )}
@@ -117,6 +136,14 @@ function Index() {
             setFilterKey(event.target.value)
           }}
           value={filterKey}></input>
+
+        <button
+          onClick={openOptions}
+          className="p-1 rounded hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+          title="Settings"
+        >
+          <SettingsIcon size={20} />
+        </button>
       </div>
       <div>
         <WordList filterKey={filterKey}></WordList>
