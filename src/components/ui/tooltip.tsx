@@ -3,12 +3,12 @@ import React, { useEffect, useLayoutEffect, useRef, useState, type ReactNode } f
 
 interface TooltipProps {
   trigger?: ReactNode
-  open?: boolean
+  defaultOpen?: boolean
   children: ReactNode
   className?: string
   position?: "top" | "bottom" | "left" | "right" | "auto"
   on?: "hover" | "click" | string[]
-  closeOnDocumentClick?: boolean
+
   keepTooltipInside?: boolean
   lockScroll?: boolean
 }
@@ -16,15 +16,13 @@ interface TooltipProps {
 const Tooltip: React.FC<TooltipProps> = ({
   trigger,
   children,
-  open: controlledOpen,
   className,
   position = "auto",
-  on = "hover",
-  closeOnDocumentClick = true
+  defaultOpen = false,
+  on = "hover"
 }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const isControlled = controlledOpen !== undefined
-  const visible = isControlled ? controlledOpen : isOpen
+  const [isOpen, setIsOpen] = useState(defaultOpen)
+  const visible = isOpen
 
   const [currentPosition, setCurrentPosition] = useState<"top" | "bottom" | "left" | "right">("bottom")
   const tooltipRef = useRef<HTMLDivElement>(null)
@@ -37,13 +35,13 @@ const Tooltip: React.FC<TooltipProps> = ({
       clearTimeout(timeoutRef.current)
       timeoutRef.current = null
     }
-    if (!isControlled && (on === "hover" || (Array.isArray(on) && on.includes("hover")))) {
+    if ((on === "hover" || (Array.isArray(on) && on.includes("hover")))) {
       setIsOpen(true)
     }
   }
 
   const handleMouseLeave = () => {
-    if (!isControlled && (on === "hover" || (Array.isArray(on) && on.includes("hover")))) {
+    if ((on === "hover" || (Array.isArray(on) && on.includes("hover")))) {
       timeoutRef.current = setTimeout(() => {
         setIsOpen(false)
       }, 200)
@@ -59,30 +57,12 @@ const Tooltip: React.FC<TooltipProps> = ({
   }, [])
 
   const handleClick = (e: React.MouseEvent) => {
-    if (!isControlled && (on === "click" || (Array.isArray(on) && on.includes("click")))) {
+    if ((on === "click" || (Array.isArray(on) && on.includes("click")))) {
       setIsOpen(!isOpen)
     }
   }
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        closeOnDocumentClick &&
-        visible &&
-        tooltipRef.current &&
-        !tooltipRef.current.contains(event.target as Node) &&
-        triggerRef.current &&
-        !triggerRef.current.contains(event.target as Node)
-      ) {
-        if (!isControlled) setIsOpen(false)
-      }
-    }
 
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [visible, closeOnDocumentClick, isControlled])
 
   useLayoutEffect(() => {
     if (visible && tooltipRef.current && triggerRef.current) {

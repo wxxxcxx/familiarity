@@ -56,8 +56,7 @@ function StarTooltip(props: any) {
           </span>
         }
         className="tooltip"
-        on={'hover'}
-        closeOnDocumentClick>
+        on={'hover'}>
         {props.data.code == 0 ? (
           <WordCard text={props.text} data={props.data}></WordCard>
         ) : (

@@ -82,9 +82,10 @@ function QueryToolTip(props: any) {
             }}></div>
         }
         className="tooltip"
-        open={props.open}
+        defaultOpen={true}
         on={'click'}
-        closeOnDocumentClick>
+        lockScroll
+      >
         {props.data.code == 0 ? (
           <WordCard text={props.text} data={props.data} />
         ) : (
@@ -127,7 +128,7 @@ const renderRootContainer = async (rootContainer: HTMLElement) => {
       }
     })
     root.render(
-      <QueryToolTip open={true} text={text} data={response}></QueryToolTip>
+      <QueryToolTip text={text} data={response}></QueryToolTip>
     )
   } catch (error) {
     console.error("Familiarity: Failed to render query tooltip", error)
