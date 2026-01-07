@@ -79,10 +79,19 @@ function QueryToolTip(props: any) {
   }, [settings?.theme])
 
   return (
-    <div className={clsx('inline theme-root', { "dark": isDark })}>
+    <div className={clsx('block theme-root', { "dark": isDark })}>
       <style>{styleText}</style>
       <Tooltip
-        trigger={<span className={clsx("select-none invisible")}>{props.text}</span>}
+        trigger={
+          <div
+            className={clsx("select-none")}
+            style={{
+              width: props.rect?.width || "auto",
+              height: props.rect?.height || "auto"
+            }}
+          >
+          </div>
+        }
         className="tooltip"
         defaultOpen={true}
         on={'click'}
@@ -122,6 +131,11 @@ const renderRootContainer = async (rootContainer: HTMLElement) => {
     ; (rootContainer as any)._reactRoot = root
   const key = rootContainer.dataset.key
   const text = rootContainer.dataset.text
+  const rect = {
+    width: rootContainer.style.width,
+    height: rootContainer.style.height
+  }
+
   try {
     const response = await sendToBackground({
       name: 'query',
@@ -130,7 +144,7 @@ const renderRootContainer = async (rootContainer: HTMLElement) => {
       }
     })
     root.render(
-      <QueryToolTip text={text} data={response}></QueryToolTip>
+      <QueryToolTip text={text} data={response} rect={rect}></QueryToolTip>
     )
   } catch (error) {
     console.error("Familiarity: Failed to render query tooltip", error)
