@@ -11,10 +11,10 @@ import { sendToBackground } from '@plasmohq/messaging'
 
 import { isEnglishWord } from '~utils'
 
-import Detail from '../components/detail'
-import Tooltip from '../components/tooltip'
+import WordCard from '../components/word-card'
+import Tooltip from '../components/ui/tooltip'
 
-const querySelection = () => {
+const querySelection = (e: MouseEvent) => {
   document.querySelectorAll('.xtooltip-query-anchor').forEach((element) => {
     element.remove()
   })
@@ -66,7 +66,7 @@ function QueryToolTip(props: any) {
         on={'click'}
         closeOnDocumentClick>
         {props.data.code == 0 ? (
-          <Detail text={props.text} data={props.data} />
+          <WordCard text={props.text} data={props.data} />
         ) : (
           props.data.message
         )}

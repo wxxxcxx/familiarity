@@ -9,9 +9,9 @@ import { createRoot } from 'react-dom/client'
 
 import { sendToBackground } from '@plasmohq/messaging'
 
-import Detail from '../components/detail'
-import Label from '../components/lable'
-import Tooltip from '../components/tooltip'
+import WordCard from '../components/word-card'
+import WordLabel from '../components/word-label'
+import Tooltip from '../components/ui/tooltip'
 import api from './renderer'
 
   ; (async () => {
@@ -28,14 +28,14 @@ function StarTooltip(props: any) {
       <Tooltip
         trigger={
           <span>
-            <Label text={props.text} data={props.data}></Label>
+            <WordLabel text={props.text} data={props.data}></WordLabel>
           </span>
         }
         className="tooltip"
         on={'hover'}
         closeOnDocumentClick>
         {props.data.code == 0 ? (
-          <Detail text={props.text} data={props.data}></Detail>
+          <WordCard text={props.text} data={props.data}></WordCard>
         ) : (
           props.data.message
         )}

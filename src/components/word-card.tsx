@@ -5,7 +5,7 @@ import { sendToBackground } from '@plasmohq/messaging'
 
 import api from '~contents/renderer'
 
-class Detail extends React.Component<{
+class WordCard extends React.Component<{
   text: string
   data: {
     code: number
@@ -91,4 +91,4 @@ class Detail extends React.Component<{
   }
 }
 
-export default Detail
+export default WordCard

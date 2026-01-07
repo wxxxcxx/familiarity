@@ -1,7 +1,7 @@
 import { clsx } from "clsx"
 import React from 'react'
 
-class Label extends React.Component<{
+class WordLabel extends React.Component<{
   text: string
   data: {
     code: number
@@ -36,4 +36,4 @@ class Label extends React.Component<{
   }
 }
 
-export default Label
+export default WordLabel
